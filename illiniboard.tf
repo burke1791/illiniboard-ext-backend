@@ -78,13 +78,30 @@ resource "aws_lambda_function" "updateArticlesInDatabase" {
   ]
 }
 
+resource "aws_lambda_function" "root" {
+  function_name = "Root"
+
+  s3_bucket = var.s3_bucket_lambda
+  s3_key    = "v${var.app_version}/root.zip"
+
+  handler = "root.main"
+  runtime = var.lambda_runtime
+
+  role = aws_iam_role.lambda_exec.arn
+
+  depends_on = [
+    aws_iam_role_policy_attachment.lambda_logs,
+    aws_cloudwatch_log_group.root
+  ]
+}
+
 resource "aws_lambda_function" "registerNewExtension" {
   function_name = "RegisterNewExtension"
 
   s3_bucket = var.s3_bucket_lambda
-  s3_key = "v${var.app_version}/registerNewExtension.zip"
+  s3_key    = "v${var.app_version}/registerNewExtension.zip"
 
-  handler = "register.handler"
+  handler = "register.register"
   runtime = var.lambda_runtime
 
   role = aws_iam_role.lambda_exec.arn
@@ -106,7 +123,7 @@ resource "aws_lambda_function" "registerNewExtension" {
 resource "aws_lambda_permission" "apigw" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.registerNewExtension.function_name
+  function_name = aws_lambda_function.root.function_name
   principal     = "apigateway.amazonaws.com"
 
   source_arn = "${aws_api_gateway_rest_api.illiniboard.execution_arn}/*/*"
@@ -134,6 +151,14 @@ resource "aws_lambda_permission" "lambda_invoke_2" {
   function_name = aws_lambda_function.rssPoll.function_name
   principal     = "lambda.amazonaws.com"
   source_arn    = aws_lambda_function.rssPoll.arn
+}
+
+resource "aws_lambda_permission" "api_invoke" {
+  statement_id  = "AllowLambdaInvoking"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.registerNewExtension.function_name
+  principal     = "lambda.amazonaws.com"
+  source_arn    = aws_lambda_function.root.arn
 }
 
 output "instance_ip" {

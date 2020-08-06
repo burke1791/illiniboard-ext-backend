@@ -23,7 +23,7 @@ resource "aws_api_gateway_integration" "lambda" {
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.registerNewExtension.invoke_arn
+  uri                     = aws_lambda_function.root.invoke_arn
 }
 
 resource "aws_api_gateway_method" "proxy_root" {
@@ -40,7 +40,7 @@ resource "aws_api_gateway_integration" "lambda_root" {
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.registerNewExtension.invoke_arn
+  uri                     = aws_lambda_function.root.invoke_arn
 }
 
 resource "aws_api_gateway_deployment" "illiniboard" {
@@ -49,7 +49,7 @@ resource "aws_api_gateway_deployment" "illiniboard" {
     aws_api_gateway_integration.lambda_root
   ]
 
-  rest_api_id       = aws_api_gateway_rest_api.illiniboard.id
-  stage_name        = "prod"
-  stage_description = var.app_version
+  rest_api_id = aws_api_gateway_rest_api.illiniboard.id
+  stage_name  = var.stage
+  # stage_description = var.app_version
 }

@@ -6,6 +6,7 @@ module.exports = {
   entry: {
     rssPoll: './functions/server/illiniboardRSS.js',
     updateArticlesInDatabase: './functions/server/updateArticlesInDatabase.js',
+    root: './functions/client/root.js',
     register: './functions/client/register.js'
   },
   output: {

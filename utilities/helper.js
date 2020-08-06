@@ -6,15 +6,7 @@ AWS.config.region = 'us-east-1';
 var lambda = new AWS.Lambda();
 
 export function invokeLambda(params) {
-  return new Promise((resolve, reject) => {
-    lambda.invoke(params, function(err, data) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
-  });
+  return lambda.invoke(params).promise();
 }
 
 export function httpRequest(url) {

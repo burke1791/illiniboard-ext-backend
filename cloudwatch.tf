@@ -1,8 +1,8 @@
 
-# resource "aws_cloudwatch_log_group" "rssPoll" {
-#   name              = "/aws/lambda/rssPoll"
-#   retention_in_days = 7
-# }
+resource "aws_cloudwatch_log_group" "root" {
+  name              = "/aws/lambda/Root"
+  retention_in_days = 7
+}
 
 # resource "aws_cloudwatch_log_group" "updateArticlesInDatabase" {
 #   name              = "/aws/lambda/updateArticlesInDatabase"

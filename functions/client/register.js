@@ -1,12 +1,9 @@
-
-import { connection } from '../../utilities/db';
 import mssql from 'mssql';
+import { connection } from '../../utilities/db';
 
 // registers a new extension by generating a guid in the database and returning it to the client
-export async function handler(event, context, callback) {
-  context.callbackWaitsForEmptyEventLoop = false;
-
-  console.log(event);
+export async function register(payload) {
+  console.log(payload);
 
   try {
     if (!connection.isConnected) {
@@ -17,14 +14,9 @@ export async function handler(event, context, callback) {
 
     let result = await request.execute('dbo.up_RegisterNewExtension');
 
-    let response = {
-      statusCode: 200,
-      body: result.recordset
-    };
-
-    callback(null, JSON.stringify(response));
+    return result.recordset[0];
   } catch (error) {
     console.log(error);
-    callback(null, error);
+    return error;
   }
 }
