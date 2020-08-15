@@ -120,6 +120,32 @@ resource "aws_lambda_function" "registerNewExtension" {
   ]
 }
 
+resource "aws_lambda_function" "checkNewArticles" {
+  function_name = "CheckNewArticles"
+
+  s3_bucket = var.s3_bucket_lambda
+  s3_key    = "v${var.app_version}/articles.zip"
+
+  handler = "articles.checkNewArticles"
+  runtime = var.lambda_runtime
+
+  role = aws_iam_role.lambda_exec.arn
+
+  vpc_config {
+    subnet_ids         = var.lambda_subnet_ids
+    security_group_ids = var.lambda_security_group_ids
+  }
+
+  environment {
+    variables = var.lambda_env
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.lambda_logs,
+    aws_cloudwatch_log_group.checkNewArticles
+  ]
+}
+
 resource "aws_lambda_permission" "apigw" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
@@ -153,10 +179,18 @@ resource "aws_lambda_permission" "lambda_invoke_2" {
   source_arn    = aws_lambda_function.rssPoll.arn
 }
 
-resource "aws_lambda_permission" "api_invoke" {
+resource "aws_lambda_permission" "api_invoke_registerNewExtension" {
   statement_id  = "AllowLambdaInvoking"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.registerNewExtension.function_name
+  principal     = "lambda.amazonaws.com"
+  source_arn    = aws_lambda_function.root.arn
+}
+
+resource "aws_lambda_permission" "api_invoke_checkNewArticles" {
+  statement_id  = "AllowLambdaInvoking"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.checkNewArticles.function_name
   principal     = "lambda.amazonaws.com"
   source_arn    = aws_lambda_function.root.arn
 }
