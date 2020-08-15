@@ -9,17 +9,12 @@ export async function main(event) {
   console.log(event);
 
   let path = event.path;
-  let body = event.body;
   let method = event.httpMethod;
 
   let functionName = ENDPOINTS[method][path];
 
-  var params = {
-    FunctionName: functionName,
-    InvocationType: 'RequestResponse',
-    LogType: 'Tail',
-    Payload: JSON.stringify(body)
-  };
+  var params = constructLambdaInvokeParams(method, event, functionName);
+  console.log(params);
 
   try {
     let data = await invokeLambda(params);
@@ -45,4 +40,26 @@ export async function main(event) {
       body: 'test error, you fool'
     }
   }
+}
+
+function constructLambdaInvokeParams(method, event, functionName) {
+  var params = {
+    FunctionName: functionName,
+    InvocationType: 'RequestResponse',
+    LogType: 'Tail'
+  };
+
+  switch (method) {
+    case 'GET':
+      params.Payload = JSON.stringify(event.queryStringParameters);
+      break;
+    case 'POST':
+      params.Payload = JSON.stringify(event.body);
+      break;
+    default:
+      console.log('default switch firing');
+      params.Payload = JSON.stringify(event.body);
+  }
+
+  return params;
 }

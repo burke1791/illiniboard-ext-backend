@@ -7,7 +7,8 @@ module.exports = {
     rssPoll: './functions/server/illiniboardRSS.js',
     updateArticlesInDatabase: './functions/server/updateArticlesInDatabase.js',
     root: './functions/client/root.js',
-    register: './functions/client/register.js'
+    register: './functions/client/register.js',
+    articles: './functions/client/articles.js'
   },
   output: {
     path: path.resolve(__dirname, 'build'),

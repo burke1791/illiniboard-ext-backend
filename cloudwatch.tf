@@ -4,6 +4,11 @@ resource "aws_cloudwatch_log_group" "root" {
   retention_in_days = 7
 }
 
+resource "aws_cloudwatch_log_group" "checkNewArticles" {
+  name              = "/aws/lambda/CheckNewArticles"
+  retention_in_days = 7
+}
+
 # resource "aws_cloudwatch_log_group" "updateArticlesInDatabase" {
 #   name              = "/aws/lambda/updateArticlesInDatabase"
 #   retention_in_days = 7

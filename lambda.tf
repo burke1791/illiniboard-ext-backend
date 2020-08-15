@@ -16,7 +16,8 @@ resource "aws_iam_policy" "lambda_invoke" {
         "${aws_lambda_function.rssPoll.arn}",
         "${aws_lambda_function.updateArticlesInDatabase.arn}",
         "${aws_lambda_function.root.arn}",
-        "${aws_lambda_function.registerNewExtension.arn}"
+        "${aws_lambda_function.registerNewExtension.arn}",
+        "${aws_lambda_function.checkNewArticles.arn}"
       ],
       "Effect": "Allow"
     }
