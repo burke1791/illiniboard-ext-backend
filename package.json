@@ -5,7 +5,7 @@
   "main": "babel.config.js",
   "dependencies": {
     "mssql": "^6.2.0",
-    "xmldom": "^0.3.0"
+    "xmldom": "^0.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",
